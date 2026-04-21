@@ -205,9 +205,6 @@ decisioning system is architected, validated, disclosed, and governed.
 **Hammad Mirza**
 [GitHub](https://github.com/hammadmrza)
 
-15+ years in financial services. MA in Information Systems & Technology
-in progress at York University (expected December 2026).
-
 ---
 
 ## License
