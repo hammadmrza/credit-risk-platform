@@ -1,0 +1,5 @@
+segment,n,bad_rate,auc,ks,gini,model
+Unsecured,192472,0.2248,0.6635,0.234,0.3271,Scorecard
+Secured,2092,0.522,0.7325,0.3793,0.465,Scorecard
+Unsecured,192472,0.2248,0.6725,0.2479,0.345,XGBoost
+Secured,2092,0.522,0.7573,0.3926,0.5146,XGBoost

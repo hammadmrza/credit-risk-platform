@@ -1,0 +1,23 @@
+SELECTED FEATURES (Phase 3)
+========================================
+
+Numeric features (raw):
+  loan_term_months                             IV=0.1918  [PRODUCT PROXY †]
+  credit_score                                 IV=0.1359
+  dti                                          IV=0.0825
+  pct_trades_never_delinquent                  IV=0.0823
+  external_risk_estimate                       IV=0.0821
+  num_high_utilization_trades                  IV=0.0718
+  loan_amount                                  IV=0.0485
+  num_inquiries_last_6m                        IV=0.0401
+  annual_income                                IV=0.0383
+  dti_x_emp_risk                               IV=0.0210
+
+† loan_term_months acts as a product-type proxy in the dual-product
+  harmonization (36/60-month unsecured vs. imputed-36 HELOC). Its
+  high IV reflects the different baseline default rates between the
+  two product books, not a genuine relationship between loan term
+  and HELOC default risk. The feature is neutralized at scoring time
+  by snapping HELOC records to the training imputation value (36).
+  See src/app/utils.py:443-448 and MODEL_CARD.md § Known Limitations.
+  Separate product models (v1.1) will remove this proxy entirely.

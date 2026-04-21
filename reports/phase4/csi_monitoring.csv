@@ -1,0 +1,11 @@
+feature,csi,status
+loan_amount,0.0174,OK
+num_inquiries_last_6m,0.0142,OK
+annual_income,0.0089,OK
+credit_score,0.0083,OK
+dti,0.0068,OK
+dti_x_emp_risk,0.0041,OK
+loan_term_months,0.0,OK
+pct_trades_never_delinquent,0.0,OK
+external_risk_estimate,0.0,OK
+num_high_utilization_trades,0.0,OK

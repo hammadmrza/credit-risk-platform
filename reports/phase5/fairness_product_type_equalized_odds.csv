@@ -1,0 +1,3 @@
+segment,n,n_good,n_bad,tpr,fpr,tpr_gap,fpr_gap,flag
+0,192472,149203,43269,0.9326,0.8191,0.0,0.6762,INVESTIGATE
+1,2092,1000,1092,0.479,0.1429,0.4536,0.0,INVESTIGATE

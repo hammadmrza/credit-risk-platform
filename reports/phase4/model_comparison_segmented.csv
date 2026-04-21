@@ -1,0 +1,5 @@
+product,split,n,default_rate,auc,ks,gini
+Unsecured,Train,1569856,0.2019,0.7421,0.3601,0.4842
+Unsecured,Test (OOT),390000,0.1988,0.7208,0.3342,0.4416
+Secured,Train,8367,0.2354,0.8012,0.4485,0.6024
+Secured,Test (OOT),2092,0.2313,0.7641,0.3912,0.5282

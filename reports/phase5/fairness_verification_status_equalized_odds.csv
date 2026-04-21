@@ -1,0 +1,4 @@
+segment,n,n_good,n_bad,tpr,fpr,tpr_gap,fpr_gap,flag
+Source Verified,78662,60912,17750,0.9421,0.8499,0.0071,0.0793,OK
+Not Verified,60206,50188,10018,0.9492,0.8395,0.0,0.0689,OK
+Verified,53604,38103,15501,0.8955,0.7706,0.0537,0.0,OK

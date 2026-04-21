@@ -1,0 +1,4 @@
+segment,n,mean_pred_pd,actual_dr,calib_error,flag
+Verified,53604,0.2058,0.2892,-0.0834,UNDER-PREDICTS RISK
+Source Verified,78662,0.168,0.2256,-0.0576,UNDER-PREDICTS RISK
+Not Verified,60206,0.1493,0.1664,-0.0171,OK

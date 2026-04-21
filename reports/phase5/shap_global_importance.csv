@@ -1,0 +1,11 @@
+feature,importance,rank,pct_total
+loan_term_months,0.36703762,1,25.2
+credit_score,0.3296656,2,22.6
+annual_income,0.22274956,3,15.3
+dti,0.15187506,4,10.4
+loan_amount,0.13601854,5,9.3
+num_inquiries_last_6m,0.13222429,6,9.1
+pct_trades_never_delinquent,0.047093198,7,3.2
+dti_x_emp_risk,0.036937203,8,2.5
+external_risk_estimate,0.030600915,9,2.1
+num_high_utilization_trades,0.0039813896,10,0.3
