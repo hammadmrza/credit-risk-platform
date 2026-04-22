@@ -1,5 +1,5 @@
 # Model Card — Credit Risk PD Model
-## Version 1.0 | March 2026
+## Version 1.1 | April 2026
 
 ---
 
@@ -31,10 +31,10 @@ This model is NOT intended for:
 
 ## Training Data
 
-| Dataset       | Source          | Rows   | Product Type |
-|---------------|-----------------|--------|--------------|
-| LendingClub   | Kaggle          | 50,000 | Unsecured    |
-| FICO HELOC    | FICO Community  | 10,459 | Secured HELOC|
+| Dataset       | Source          | Rows      | Product Type |
+|---------------|-----------------|-----------|--------------|
+| LendingClub   | Kaggle          | 2,260,701 | Unsecured    |
+| FICO HELOC    | FICO Community  | 10,459    | Secured HELOC|
 
 - **Observation window**: 2007-2018 (LendingClub), cross-sectional (HELOC)
 - **Training period**: LendingClub 2007-2015, HELOC 80% random sample
@@ -125,7 +125,7 @@ Total flags requiring investigation: 38
 3. Reject inference applied via augmentation method (synthetic declined population)
 4. Model does not incorporate macroeconomic forward-looking adjustments (done separately via PIT→TTC conversion)
 5. Performance metrics reflect synthetic data; re-validation required on real portfolio data
-6. **`loan_term_months` is a product-type proxy in the combined model.** Because LendingClub contains only 36/60-month unsecured loans and HELOC records were imputed to 36 months during harmonization, the feature's high IV (0.19) reflects the baseline default-rate gap between the two books rather than a genuine term→default relationship for HELOC. This is materially important to disclose because a reviewer looking at HELOC SHAP values would otherwise see loan term as a top driver, which is economically implausible for a secured home equity product. The issue is neutralized at scoring time by standardising HELOC `loan_term_months` to the training imputation value before the model sees it (`src/app/utils.py:443-448`). The structural fix — separate per-product PD models — is scheduled for v1.1.
+6. **`loan_term_months` is a product-type proxy in the combined model.** Because LendingClub contains only 36/60-month unsecured loans and HELOC records were imputed to 36 months during harmonization, the feature's high IV (0.19) reflects the baseline default-rate gap between the two books rather than a genuine term→default relationship for HELOC. This is materially important to disclose because a reviewer looking at HELOC SHAP values would otherwise see loan term as a top driver, which is economically implausible for a secured home equity product. The issue is neutralized at scoring time by standardising HELOC `loan_term_months` to the training imputation value before the model sees it (`src/app/utils.py:443-448`). The structural fix — separate per-product PD models — is now implemented as the v1.1 challenger architecture (see §"v1.1 — Segmented Product Models" below).
 
 ---
 
@@ -142,7 +142,7 @@ Total flags requiring investigation: 38
 
 - **Model owner**: Credit Risk & Strategy
 - **Validation frequency**: Annual full validation, quarterly monitoring
-- **Next review date**: March 2027
+- **Next review date**: April 2027
 - **Regulatory alignment**: OSFI E-23, Basel III IRB, IFRS 9, ECOA, Regulation B
 
 ---

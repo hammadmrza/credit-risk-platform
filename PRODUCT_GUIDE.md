@@ -569,7 +569,7 @@ Documented in full in [MODEL_CARD.md](MODEL_CARD.md). The major items:
 - [QUICKSTART.md](QUICKSTART.md) — Install and run
 - [CREDIT_POLICY.md](CREDIT_POLICY.md) — Formal credit policy
 - [MODEL_CARD.md](MODEL_CARD.md) — OSFI E-23 model card
-- [CHANGELOG_v1.1.md](CHANGELOG_v1.1.md) — v1.1 release notes (31 fixes)
+- [API_GUIDE.md](API_GUIDE.md) — FastAPI endpoint reference
 
 ---
 

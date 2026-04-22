@@ -647,7 +647,6 @@ Board notification at the next regular meeting.
 - **PRODUCT_GUIDE.md** — Functional description of the Platform
 - **README.md** — Public-facing project overview
 - **QUICKSTART.md** — Platform installation and operation guide
-- **CHANGELOG_v1.1.md** — v1.1 release notes
 
 ---
 

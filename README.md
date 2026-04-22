@@ -88,6 +88,27 @@ Every phase feeds the next. Nothing is orphaned; nothing is duplicated.
 
 ---
 
+## Phase plan
+
+The project is organised into numbered phases. Phases 2, 7, and 8 are
+deliverables rather than standalone notebooks — their code lives in `src/`
+and is invoked directly by the app and API.
+
+| Phase | Deliverable                                    | Status                                                    |
+|-------|------------------------------------------------|-----------------------------------------------------------|
+| 1     | Data harmonization (LendingClub + HELOC)       | `notebooks/phase1/`                                       |
+| 2     | Exploratory data analysis                      | Integrated — utility functions in `src/data/eda_utils.py` |
+| 3     | Feature engineering (WoE, IV, interactions)    | `notebooks/phase3/`                                       |
+| 4     | Model training (PD + LGD + EAD)                | `notebooks/phase4/`                                       |
+| 4b    | Segmented per-product PD models (v1.1)         | `notebooks/phase4b/`                                      |
+| 5     | Explainability (SHAP, counterfactuals, fairness) | `notebooks/phase5/`                                     |
+| 6     | Regulatory analytics (Basel III, IFRS 9, stress) | `notebooks/phase6/`                                     |
+| 7     | FastAPI endpoint + Ollama LLM                  | `src/api/` and `src/llm/`                                 |
+| 8     | Streamlit application (7 tabs)                 | `src/app/`                                                |
+| 9     | Fraud detection                                | `notebooks/phase9/`                                       |
+
+---
+
 ## Tech stack
 
 **Modelling** · scikit-learn · XGBoost · OptBinning (WoE/IV) · SHAP · numpy / pandas
@@ -163,8 +184,7 @@ management.
 | [PRODUCT_GUIDE.md](PRODUCT_GUIDE.md) | What the platform does, tab-by-tab walkthrough, models, data sources, limitations |
 | [CREDIT_POLICY.md](CREDIT_POLICY.md) | Formal credit policy in the voice a real lender's risk team and OSFI examiner would expect |
 | [MODEL_CARD.md](MODEL_CARD.md) | OSFI E-23 model governance document — intended use, training data, metrics, v1.1 challenger, limitations |
-| [CHANGELOG_v1.1.md](CHANGELOG_v1.1.md) | v1.1 release notes — 31 fixes plus the segmented pipeline |
-| [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) | Detailed file-placement map (generated with v1.1 release) |
+| [API_GUIDE.md](API_GUIDE.md) | FastAPI endpoint reference — request/response schemas, integration patterns, curl examples |
 
 ---
 
