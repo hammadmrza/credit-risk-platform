@@ -1,7 +1,5 @@
 # Credit Risk & Fraud Detection Platform
 
-![Process Flow](Credit_Risk_Platform_Process_Flow.png)
-
 > An end-to-end credit risk decisioning platform that integrates PD/LGD/EAD
 > modelling, fraud detection, explainability, and regulatory analytics into a
 > unified workflow. Trained on real-world LendingClub + FICO HELOC data.
@@ -9,6 +7,8 @@
 ![Python](https://img.shields.io/badge/python-3.12-blue)
 ![Status](https://img.shields.io/badge/status-v1.1-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
+
+![Process Flow](Credit_Risk_Platform_Process_Flow.png)
 
 ---
 
