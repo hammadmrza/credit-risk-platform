@@ -34,6 +34,7 @@ from src.llm.ollama_client import (
     generate_credit_memo, generate_adverse_action_letter,
     generate_risk_summary, check_ollama_status,
 )
+from src.llm.policy_grounding import ground_decision
 
 st.set_page_config(page_title="Credit Risk Platform", page_icon="📊",
                    layout="wide", initial_sidebar_state="expanded")
@@ -651,12 +652,13 @@ with tab1:
             Template fallback when Ollama not installed.
             </div>""", unsafe_allow_html=True)
             with st.spinner("Generating memo..."):
+                policy_cites = ground_decision(decision, product_type=product_int)
                 memo = generate_credit_memo(
                     applicant=applicant, pd_score=result["pd_pit"],
                     credit_score=result["credit_score"], risk_tier=result["risk_tier"],
                     lgd=result["lgd"], ead=result["ead"], expected_loss=result["el"],
                     shap_factors=result["all_factors"], decision=decision,
-                    product_type=product_int)
+                    product_type=product_int, policy_citations=policy_cites)
             st.text_area("", memo, height=260, label_visibility="collapsed")
 
             if decision in ("DECLINE_CREDIT", "DECLINE_POLICY", "REFER"):
