@@ -36,6 +36,8 @@ import logging
 from typing import Optional
 from pathlib import Path
 
+from src.llm.policy_grounding import format_policy_basis
+
 log = logging.getLogger(__name__)
 
 OLLAMA_URL   = "http://localhost:11434/api/generate"
@@ -93,7 +95,8 @@ def generate_credit_memo(applicant: dict,
                           expected_loss: float,
                           shap_factors: list,
                           decision: str,
-                          product_type: int) -> str:
+                          product_type: int,
+                          policy_citations: Optional[list] = None) -> str:
     """
     Generate a structured credit memo using Ollama LLM.
 
@@ -108,6 +111,10 @@ def generate_credit_memo(applicant: dict,
         shap_factors: List of top SHAP factor dicts.
         decision: "APPROVE" or "DECLINE".
         product_type: 0=unsecured, 1=secured.
+        policy_citations: Optional list of {"section", "excerpt"} dicts from
+            src.llm.policy_grounding.ground_decision. When supplied, the memo
+            grounds the decision in the specific CREDIT_POLICY.md clauses and
+            cites them, so the rationale is traceable to the governing policy.
 
     Returns:
         Formatted credit memo string.
@@ -123,11 +130,16 @@ def generate_credit_memo(applicant: dict,
         for f in top_factors
     ])
 
+    policy_block = format_policy_basis(policy_citations) if policy_citations else ""
+
     system = (
         "You are a senior credit analyst at a Canadian financial institution. "
         "Write professional, concise credit memos in formal banking language. "
         "Be factual, reference specific data points, and keep to 250 words. "
-        "Never fabricate data. Use only the information provided."
+        "Never fabricate data. Use only the information provided. "
+        "When a POLICY BASIS is provided, ground the Decision and Rationale in "
+        "those clauses and cite the section number(s) in square brackets, "
+        "e.g. [§3.3]. Quote thresholds exactly as written."
     )
 
     prompt = f"""
@@ -151,11 +163,14 @@ EXPECTED LOSS METRICS:
   Exposure at Default: ${ead:,.0f}
   Expected Loss: ${expected_loss:,.0f} ({el_rate:.1%} of EAD)
 
+{policy_block}
+
 Structure the memo as:
 1. Application Summary (2 sentences)
 2. Credit Assessment (3-4 sentences covering key strengths/weaknesses)
 3. Risk Metrics (1-2 sentences on EL and model output)
-4. Decision and Rationale (2-3 sentences)
+4. Decision and Rationale (2-3 sentences; cite the POLICY BASIS section
+   number(s) above if provided)
 """
 
     response = _call_ollama(prompt, system, temperature=0.3)
@@ -166,7 +181,7 @@ Structure the memo as:
         return _credit_memo_template(
             applicant, pd_score, credit_score, risk_tier,
             lgd, ead, expected_loss, shap_factors, decision,
-            product_name, el_rate
+            product_name, el_rate, policy_citations
         )
 
 
@@ -289,7 +304,8 @@ Summarise this credit decision in exactly two sentences:
 
 def _credit_memo_template(applicant, pd_score, credit_score, risk_tier,
                            lgd, ead, expected_loss, shap_factors,
-                           decision, product_name, el_rate) -> str:
+                           decision, product_name, el_rate,
+                           policy_citations=None) -> str:
     """Structured template credit memo — Ollama fallback."""
     is_heloc = "equity" in product_name.lower() or "heloc" in product_name.lower()
 
@@ -314,6 +330,16 @@ def _credit_memo_template(applicant, pd_score, credit_score, risk_tier,
 
     str_text = ", ".join(strengths[:2]) if strengths else "credit profile"
     wk_text  = ", ".join(weaknesses[:2]) if weaknesses else "risk factors"
+
+    # Policy basis — cite the governing CREDIT_POLICY.md clauses for this decision.
+    if policy_citations:
+        _pb = ["", "POLICY BASIS"]
+        for c in policy_citations:
+            _pb.append(f"{c['section']}")
+            _pb.append(f"  {c['excerpt']}")
+        policy_text = "\n".join(_pb) + "\n"
+    else:
+        policy_text = ""
 
     return f"""CREDIT MEMO — {product_name.upper()}
 
@@ -345,7 +371,7 @@ DECISION: {decision}
 {"Application meets minimum credit criteria for approval at the requested amount." \
  if decision == "APPROVE" else \
  f"Application does not meet minimum credit criteria. Primary decline reason: {primary}."}
-
+{policy_text}
 [Note: Generated using template fallback — start Ollama for LLM-generated memos]
 """
 

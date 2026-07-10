@@ -52,6 +52,7 @@ from src.explainability.counterfactuals import find_counterfactual
 from src.llm.ollama_client import (
     generate_credit_memo, generate_adverse_action_letter, check_ollama_status
 )
+from src.llm.policy_grounding import ground_decision
 
 # Import decision constants from utils
 from src.app.utils import (
@@ -273,13 +274,15 @@ def _score(req: ApplicantRequest) -> ScoreResponse:
     all_factors = formatted["top_risk_drivers"] + formatted["top_protective_factors"]
     adverse     = generate_adverse_action_reasons(explanation, top_n=3)
 
-    # Memo
+    # Memo — grounded in the CREDIT_POLICY.md clauses governing this decision
     memo = None
     if req.generate_memo and decision != "DECLINE_FRAUD":
+        policy_cites = ground_decision(decision, product_type=product_int)
         memo = generate_credit_memo(
             applicant=applicant, pd_score=pd_pit, credit_score=cr_sc, risk_tier=tier,
             lgd=lgd, ead=ead, expected_loss=el,
-            shap_factors=all_factors, decision=decision, product_type=product_int
+            shap_factors=all_factors, decision=decision, product_type=product_int,
+            policy_citations=policy_cites
         )
 
     return ScoreResponse(

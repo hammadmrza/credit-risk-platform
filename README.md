@@ -186,6 +186,10 @@ management.
 | [MODEL_CARD.md](MODEL_CARD.md) | OSFI E-23 model governance document — intended use, training data, metrics, v1.1 challenger, limitations |
 | [API_GUIDE.md](API_GUIDE.md) | FastAPI endpoint reference — request/response schemas, integration patterns, curl examples |
 
+**Companion project:** [credit-risk-knowledge-assistant](https://github.com/hammadmrza/credit-risk-knowledge-assistant)
+— a local-first RAG knowledge assistant that answers policy, procedure, and
+compliance questions grounded in this platform's documents, with citations.
+
 ---
 
 ## Data — not included in repo
