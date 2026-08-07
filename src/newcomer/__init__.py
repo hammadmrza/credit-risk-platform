@@ -35,10 +35,35 @@ from src.newcomer.policy import (
     adjudicate_newcomer,
     compute_newcomer_dti,
 )
+from src.newcomer.data import (
+    generate_newcomers,
+    load_newcomers,
+    get_newcomer_data,
+    to_dataframe,
+)
+from src.newcomer.monitoring import (
+    adjudicate_batch,
+    segment_report,
+    print_report,
+)
+from src.newcomer.model import train_newcomer_pd
 
 __all__ = [
+    # Step 1 — alternative-payment score
     "compute_alt_payment_score",
     "get_alt_payment_signal",
+    # Step 2 — adjudication
     "adjudicate_newcomer",
     "compute_newcomer_dti",
+    # Step 4 — data
+    "generate_newcomers",
+    "load_newcomers",
+    "get_newcomer_data",
+    "to_dataframe",
+    # Step 3 — monitoring
+    "adjudicate_batch",
+    "segment_report",
+    "print_report",
+    # Step 4 — model
+    "train_newcomer_pd",
 ]
