@@ -168,6 +168,15 @@ combined AUC of 0.68, primarily because product-proxy leakage is removed.
 validation, and thin-file segment performance analysis. The v1.0 unified model remains
 the production decisioning model until a governance decision upgrades the champion.
 
+**Newcomer segment (add-on, non-scoring)**: a "newcomer" is defined by a *short or absent
+bureau history* — bureau tenure ≤ 3 years, no derogatory/delinquent trades, and a risk
+score ≥ 620 (or a no-hit / zero-score thin bureau) — **not** by thin-file (few tradelines)
+alone. An informational Tab-1 overlay (`src/app/newcomer.py`, documented in PRODUCT_GUIDE
+§6.5a) reports eligibility for a Newcomer-to-Canada program lane; it reads existing inputs
+and **does not affect the score, PD, or decision**. Immigration / licence eligibility is
+documentary (human-verified), never a model feature; true no-hits are a roadmap item (the
+core model requires a score). It is an inclusive lane — never used to decline.
+
 **Artifacts**:
 - Code: `src/models/pd_model_segmented.py`
 - Runner: `notebooks/phase4b/04b_segmented_models.py`
