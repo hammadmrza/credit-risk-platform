@@ -30,6 +30,7 @@ from src.app.utils import (
     compute_roc_curve, compute_ks_curve, confusion_at_threshold,
     compute_lift_gains, compute_tier_pds_from_portfolio, compute_profit_curve,
 )
+from src.app import newcomer as newcomer_program  # ADD-ON: Newcomer-to-Canada eligibility (informational)
 from src.llm.ollama_client import (
     generate_credit_memo, generate_adverse_action_letter,
     generate_risk_summary, check_ollama_status,
@@ -340,6 +341,17 @@ with tab1:
                 help="Proxy for Equifax NeoBureau / Borrowell alt data. In production: live API call. See PRODUCT_GUIDE.md §9.")
             thin_file = st.checkbox("Thin file (<3 tradelines)",
                 help="Fewer than 3 credit accounts. Increases model uncertainty. Alt data score weighted higher.")
+            # ── ADD-ON inputs — Newcomer-to-Canada program (informational only) ──
+            # These feed the eligibility panel shown below the decision. They are
+            # NOT added to the `applicant` dict, so the model's score is unchanged.
+            bureau_tenure_years = st.number_input("Bureau tenure (years)", 0, 40, 6,
+                help="Age of the credit file (how long on bureau). ≤3 yrs meets the "
+                     "Newcomer-program bureau-age criterion. Informational — does "
+                     "NOT change the score.")
+            no_hit = st.checkbox("No-hit / zero-score bureau (Newcomer lane)",
+                help="No usable TransUnion file / zero risk score. The Newcomer "
+                     "program allows a no-hit lane; note the core model still needs "
+                     "a score to rate an applicant. Informational only.")
 
         app_name  = st.text_input("Applicant first name (for adverse action letter)", "",
                                   placeholder="Required for letter generation",
@@ -530,6 +542,32 @@ with tab1:
                     f'<b>Alert Tier:</b> <span style="color:{fc};font-weight:700">'
                     f'{fraud_tier}</span> | {fa}</div>',
                     unsafe_allow_html=True)
+
+        # ── 🍁 Newcomer to Canada program — ADD-ON (informational overlay) ──
+        # Self-contained: reads inputs already collected above, and never affects
+        # the score / PD / decision. Immigration & licence checks are documentary
+        # (human-verified) and listed for reference only.
+        nc = newcomer_program.evaluate(
+            credit_score=credit_score, derog_marks=derog_marks,
+            bureau_tenure_years=bureau_tenure_years, no_hit=no_hit,
+            thin_file=thin_file, alt_data_score=alt_data)
+        _nc_head = ("✅ Meets the Newcomer-program bureau criteria" if nc.qualifies
+                    else "▫️ Does not meet the Newcomer-program bureau criteria")
+        with st.expander(f"🍁 Newcomer to Canada program — {_nc_head} (add-on)",
+                         expanded=nc.qualifies):
+            st.caption("Informational overlay — does **not** change the model's "
+                       f"score, PD, or decision above. Bureau lane: **{nc.lane}**.")
+            for label, passed, detail in nc.checks:
+                st.markdown(f"- {'✅' if passed else '❌'} **{label}** — {detail}")
+            st.markdown(f"**ALT-data support:** {nc.ads_support}")
+            for note in nc.notes:
+                st.warning(note)
+            st.markdown("**Also required (verified from documents, outside this "
+                        "model):**")
+            for req in nc.doc_requirements:
+                st.markdown(f"- 📄 {req}")
+            st.caption("This is an *inclusive* program lane — it widens access for "
+                       "thin / young-file newcomers; it is never used to decline.")
 
         st.divider()
 

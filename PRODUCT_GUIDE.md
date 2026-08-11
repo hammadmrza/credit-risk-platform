@@ -438,6 +438,40 @@ Clarity, Nova Credit). The interface (`src/data/alt_data.py`) is a drop-in
 swap. The commercial value is strongest for thin-file applicants where
 traditional bureau data is limited.
 
+### 6.5a Newcomer to Canada program (add-on)
+
+An optional **informational overlay** on Tab 1 (`src/app/newcomer.py`) that reports
+whether an applicant meets the **credit-bureau** portion of a "Newcomer to Canada"
+lending program. It is deliberately **decoupled from the scoring engine**: it reads
+attributes already on the form and **never changes the score, PD, or decision** —
+the numbers are identical with the panel present or absent.
+
+The program has two kinds of rules; only the bureau signals are modelled:
+
+- **Documentary eligibility (not modelled — human-verified):** landed in Canada
+  < 5 years (PR card, IMM5292 / IMM5688, refugee, or a citizen with a foreign
+  passport) **and** a valid Canadian driver's licence. Shown for reference only.
+- **Credit-bureau criteria (evaluated), either lane:**
+  - **Lane A — no-hit / zero-score thin bureau:** qualifies regardless of tenure.
+    A true no-hit has no score, so the **core model cannot rate them** (it requires
+    a score) — serving no-hits needs an alternative-data-only path (**roadmap**).
+  - **Lane B — clean young file:** risk score ≥ **620**, **no** trades rated
+    R2 / I2 / O2 or worse (`num_derogatory_marks == 0`), and bureau tenure ≤ **3
+    years** (`months_since_oldest_trade ≤ 36`).
+
+**Why bureau age, not thin-file:** a thin file (few tradelines) is not the same as
+a newcomer — the defining signal is a **short/absent bureau history**, so the panel
+keys off bureau tenure and cleanliness, not account count.
+
+**Support mechanism:** ADS is the intended lever for this thin/young segment (the
+`ads_x_thin_file` interaction + the drop-in alt-data API). Per §6.5, ADS is largely
+redundant in the current synthetic data, so the overlay states design intent, not a
+live driver.
+
+**Fair lending:** this is an **inclusive** program lane that *widens* access for
+thin/young-file newcomers — it is never used to decline, and immigration status is
+never a scoring variable (only bureau facts are).
+
 ### 6.6 Regulatory models
 
 **Basel III IRB** — Per-product asset correlation R, standard normal CDF N,
